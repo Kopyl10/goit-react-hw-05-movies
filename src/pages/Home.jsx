@@ -1,11 +1,12 @@
 import { useEffect, useState } from 'react';
+import { Link, useLocation } from 'react-router-dom';
 import axios from 'axios';
-import { Link } from 'react-router-dom';
 
 const API_KEY = '603c177ba1164b029d0f3b31548d47a9';
 
 export default function Home() {
   const [movies, setMovies] = useState([]);
+  const location = useLocation();
 
   useEffect(() => {
     async function fetchTrending() {
@@ -28,7 +29,9 @@ export default function Home() {
       <ul>
         {movies.map(movie => (
           <li key={movie.id}>
-            <Link to={`/movies/${movie.id}`}>{movie.title}</Link>
+            <Link to={`/movies/${movie.id}`} state={{ from: location }}>
+              {movie.title}
+            </Link>
           </li>
         ))}
       </ul>
