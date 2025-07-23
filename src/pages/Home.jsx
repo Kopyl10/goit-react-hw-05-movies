@@ -1,40 +1,32 @@
 import { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import axios from 'axios';
-
-const API_KEY = '603c177ba1164b029d0f3b31548d47a9';
+import { fetchTrendingMovies } from '../services/api';
+import css from './Home.module.css';
 
 export default function Home() {
   const [movies, setMovies] = useState([]);
   const location = useLocation();
 
   useEffect(() => {
-    async function fetchTrending() {
-      try {
-        const response = await axios.get(
-          `https://api.themoviedb.org/3/trending/movie/day?api_key=${API_KEY}`
-        );
-        setMovies(response.data.results);
-      } catch (error) {
-        console.error('Error fetching trending movies:', error);
-      }
-    }
-
-    fetchTrending();
+    fetchTrendingMovies().then(setMovies).catch(console.error);
   }, []);
 
   return (
-    <div>
-      <h1>Trending Today</h1>
-      <ul>
-        {movies.map(movie => (
-          <li key={movie.id}>
-            <Link to={`/movies/${movie.id}`} state={{ from: location }}>
-              {movie.title}
+    <>
+      <h1 className={css.title}>Trending Today</h1>
+      <ul className={css.list}>
+        {movies.map(m => (
+          <li key={m.id} className={css.item}>
+            <Link
+              to={`/movies/${m.id}`}
+              state={{ from: location }}
+              className={css.movieLink}
+            >
+              {m.title}
             </Link>
           </li>
         ))}
       </ul>
-    </div>
+    </>
   );
 }
