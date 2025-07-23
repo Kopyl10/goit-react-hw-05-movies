@@ -21,3 +21,11 @@ export const fetchMoviesByQuery = async query => {
   });
   return response.data.results;
 };
+export const fetchMovieDetails = async movieId => {
+  const response = await axios.get(`${BASE_URL}/movie/${movieId}`, {
+    params: {
+      api_key: API_KEY,
+    },
+  });
+  return response.data;
+};
