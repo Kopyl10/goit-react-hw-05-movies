@@ -5,26 +5,34 @@ import { fetchMoviesByQuery } from '../services/api';
 export default function Movies() {
   const [movies, setMovies] = useState([]);
   const [searchParams, setSearchParams] = useSearchParams();
-  const query = searchParams.get('query') || '';
+  const query = searchParams.get('query') ?? '';
 
   useEffect(() => {
     if (!query) return;
 
-    fetchMoviesByQuery(query).then(setMovies).catch(console.error);
+    const fetch = async () => {
+      try {
+        const results = await fetchMoviesByQuery(query);
+        setMovies(results);
+      } catch (error) {
+        console.error('Error fetching movies:', error);
+      }
+    };
+
+    fetch();
   }, [query]);
 
   const handleSubmit = e => {
     e.preventDefault();
-    const value = e.target.elements.search.value.trim();
-    if (value) {
-      setSearchParams({ query: value });
-    }
+    const value = e.target.elements.query.value.trim();
+    if (!value) return;
+    setSearchParams({ query: value });
   };
 
   return (
     <div>
       <form onSubmit={handleSubmit}>
-        <input type="text" name="search" defaultValue={query} />
+        <input name="query" defaultValue={query} />
         <button type="submit">Search</button>
       </form>
 
