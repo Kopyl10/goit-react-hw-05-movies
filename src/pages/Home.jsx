@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import css from './Home.module.css';
+import MovieList from '../components/MovieList';
 import { fetchTrendingMovies } from '../services/api';
 
 export default function Home() {
@@ -16,19 +17,11 @@ export default function Home() {
   return (
     <section>
       <h1 className={css.title}>Trending Today</h1>
-      <ul className={css.list}>
-        {movies.map(movie => (
-          <li key={movie.id} className={css.item}>
-            <Link
-              to={`/movies/${movie.id}`}
-              state={{ from: location }}
-              className={css.movieLink}
-            >
-              {movie.title}
-            </Link>
-          </li>
-        ))}
-      </ul>
+      {movies.length > 0 ? (
+        <MovieList movies={movies} />
+      ) : (
+        <p>Loading movies…</p>
+      )}
     </section>
   );
 }
