@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import css from './Home.module.css';
-import MovieList from '../components/MovieList';
+import MovieList from './MovieList';
 import { fetchTrendingMovies } from '../services/api';
 
 export default function Home() {

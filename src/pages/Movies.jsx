@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import MovieList from '../components/MovieList';
+import MovieList from './MovieList';
 import css from './Movies.module.css';
 import { fetchMoviesByQuery } from '../services/api';
 
