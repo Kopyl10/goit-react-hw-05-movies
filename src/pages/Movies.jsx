@@ -1,25 +1,40 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import MovieList from './MovieList';
 import css from './Movies.module.css';
 import { fetchMoviesByQuery } from '../services/api';
 
 export default function Movies() {
-  const [query, setQuery] = useState('');
   const [movies, setMovies] = useState([]);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const query = searchParams.get('query') ?? '';
 
-  const handleSubmit = async e => {
+  useEffect(() => {
+    if (!query) return;
+
+    const doFetch = async () => {
+      try {
+        const results = await fetchMoviesByQuery(query);
+        setMovies(results);
+      } catch (error) {
+        console.error('Error fetching movies:', error);
+      }
+    };
+    doFetch();
+  }, [query]);
+
+  const handleSubmit = e => {
     e.preventDefault();
-    if (!query.trim()) return;
-    const results = await fetchMoviesByQuery(query);
-    setMovies(results);
+    const value = e.target.elements.query.value.trim();
+    if (!value) return;
+    setSearchParams({ query: value });
   };
-
   return (
     <>
       <form onSubmit={handleSubmit} className={css.form}>
         <input
-          value={query}
-          onChange={e => setQuery(e.target.value)}
+          name="query"
+          defaultValue={query}
           placeholder="Search movies"
           className={css.input}
         />
@@ -31,7 +46,7 @@ export default function Movies() {
       {movies.length > 0 ? (
         <MovieList movies={movies} />
       ) : (
-        <p className={css.noResults}>No movies found.</p>
+        query && <p className={css.noResults}>No movies found for “{query}.”</p>
       )}
     </>
   );
